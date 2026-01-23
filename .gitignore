@@ -2,5 +2,26 @@
 # Ignore Python cache
 __pycache__/
 *.py[cod]
+
 # Ignore environment variables
 .env
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Database
+*.sqlite3
+db.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Django static files
+/static/
+/staticfiles/
+
+# Media files (optional - uncomment if you don't want to commit media)
+# media/
