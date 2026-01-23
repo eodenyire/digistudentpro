@@ -10,7 +10,7 @@ Sample PHP Laravel application that you can deploy on Azure.
 
 ## License:
 
-See [LICENSE](LICENSE).
+See [LICENSE](../LICENSE).
 
 ## Contributing
 
