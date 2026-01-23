@@ -37,7 +37,9 @@ class StudentProfileViewSet(viewsets.ModelViewSet):
         """Filter to show only own profile or all for admin"""
         if self.request.user.is_staff:
             return self.queryset
-        return self.queryset.filter(user=self.request.user)
+        if hasattr(self.request.user, 'student_profile'):
+            return self.queryset.filter(user=self.request.user)
+        return self.queryset.none()
     
     @action(detail=False, methods=['get'])
     def my_profile(self, request):
