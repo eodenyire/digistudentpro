@@ -23,8 +23,15 @@ DATABASES = {
     )
 }
 
-# Static files - Use whitenoise or cloud storage
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+# Static files - Use Django 4.2+ STORAGES setting
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    },
+}
 
 # Media files - Configure for cloud storage (S3, etc.)
 if config('USE_S3', default=False, cast=bool):
@@ -42,7 +49,11 @@ if config('USE_S3', default=False, cast=bool):
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Logging - More comprehensive for production
-LOGGING['handlers']['file']['filename'] = '/var/log/digistudentpro/django.log'
+import os
+LOG_DIR = BASE_DIR / 'logs'
+os.makedirs(LOG_DIR, exist_ok=True)
+
+LOGGING['handlers']['file']['filename'] = LOG_DIR / 'django.log'
 LOGGING['root']['level'] = 'WARNING'
 LOGGING['loggers']['django']['level'] = 'WARNING'
 LOGGING['loggers']['apps']['level'] = 'INFO'

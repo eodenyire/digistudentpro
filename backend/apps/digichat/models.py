@@ -101,4 +101,5 @@ class MessageReport(models.Model):
         ordering = ['-created_at']
     
     def __str__(self):
-        return f"Report by {self.reported_by.get_full_name()}"
+        reporter = self.reported_by.get_full_name() if self.reported_by else 'Unknown'
+        return f"Report by {reporter}"

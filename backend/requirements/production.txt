@@ -13,5 +13,4 @@ dj-database-url>=2.1.0
 # Storage (for AWS S3 if needed)
 django-storages>=1.14.2
 boto3>=1.34.10
-Django>=3.2,<4
-# Other production packages can be added here
+
