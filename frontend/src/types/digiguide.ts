@@ -31,14 +31,22 @@ export interface Subject {
   updated_at: string;
 }
 
+export interface ClusterRequirement {
+  id: number;
+  subject: number;
+  subject_name: string;
+  minimum_grade: string;
+  is_mandatory: boolean;
+}
+
 export interface Cluster {
   id: number;
   name: string;
   code: string;
   description?: string;
-  subjects: number[];
-  created_at: string;
-  updated_at: string;
+  requirements?: ClusterRequirement[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Career {
