@@ -18,7 +18,7 @@ export default function BrowseResourcesPage() {
         search: searchQuery || undefined,
         subject: selectedSubject,
         resource_type: selectedType,
-        difficulty_level: selectedDifficulty,
+        difficulty: selectedDifficulty,
       }),
   });
 
@@ -148,8 +148,8 @@ export default function BrowseResourcesPage() {
                       <Icon className="text-primary-600" size={20} />
                     </div>
                     <div className="flex-1">
-                      <span className={`text-xs px-2 py-1 rounded ${getDifficultyColor(resource.difficulty_level)}`}>
-                        {resource.difficulty_level}
+                      <span className={`text-xs px-2 py-1 rounded ${getDifficultyColor(resource.difficulty || resource.difficulty_level || 'beginner')}`}>
+                        {resource.difficulty || resource.difficulty_level || 'beginner'}
                       </span>
                     </div>
                   </div>
@@ -164,8 +164,10 @@ export default function BrowseResourcesPage() {
 
                   <div className="flex items-center justify-between text-sm text-secondary-500 mb-4">
                     <span className="capitalize">{resource.resource_type}</span>
-                    {resource.duration && <span>{resource.duration} min</span>}
-                    <span>{resource.view_count} views</span>
+                    {(resource.duration || resource.duration_minutes) && (
+                      <span>{resource.duration || resource.duration_minutes} min</span>
+                    )}
+                    <span>{resource.view_count || resource.views_count || 0} views</span>
                   </div>
 
                   <Button className="w-full" size="sm">

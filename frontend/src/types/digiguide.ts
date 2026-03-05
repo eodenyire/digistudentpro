@@ -45,13 +45,15 @@ export interface Career {
   id: number;
   name: string;
   description?: string;
-  clusters: number[];
+  cluster?: number;
+  cluster_name?: string;
+  clusters?: number[];
   required_subjects: number[];
   minimum_grades: Record<string, string>;
   salary_range?: string;
   job_outlook?: string;
   required_qualifications?: string;
-  skills_needed: string[];
+  skills_needed: string | string[];
   career_path?: string;
   work_environment?: string;
   created_at: string;

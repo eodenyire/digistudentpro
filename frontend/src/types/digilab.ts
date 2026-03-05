@@ -36,11 +36,14 @@ export interface LearningResource {
   content_url?: string;
   file?: string;
   thumbnail?: string;
+  difficulty?: DifficultyLevel;
   duration?: number;
+  duration_minutes?: number;
   difficulty_level: DifficultyLevel;
   tags: string[];
   is_featured: boolean;
   view_count: number;
+  views_count?: number;
   created_by: number;
   created_at: string;
   updated_at: string;
@@ -109,6 +112,7 @@ export interface ResourceFilters {
   grade?: number;
   strand?: number;
   resource_type?: ResourceType;
+  difficulty?: DifficultyLevel;
   difficulty_level?: DifficultyLevel;
   search?: string;
   is_featured?: boolean;

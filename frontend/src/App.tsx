@@ -11,6 +11,7 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import ProfilePage from './pages/ProfilePage';
 import CareersPage from './pages/digiguide/CareersPage';
 import BrowseResourcesPage from './pages/digilab/BrowseResourcesPage';
 import SquadsPage from './pages/digichat/SquadsPage';
@@ -42,6 +43,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
               
               {/* DigiGuide Routes */}
               <Route path="/digiguide/careers" element={<CareersPage />} />

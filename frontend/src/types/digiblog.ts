@@ -1,6 +1,12 @@
 // DigiBlog Module Types
 
-export type BlogCategory = 'education' | 'career' | 'technology' | 'lifestyle' | 'news' | 'other';
+export type BlogCategory =
+  | 'study_hacks'
+  | 'mental_health'
+  | 'scholarships'
+  | 'cbc_updates'
+  | 'tech'
+  | 'career_guidance';
 
 export interface BlogPost {
   id: number;
@@ -13,12 +19,16 @@ export interface BlogPost {
   excerpt?: string;
   featured_image?: string;
   category: BlogCategory;
-  tags: string[];
-  is_published: boolean;
+  tags: string | string[];
+  status?: 'draft' | 'published' | 'archived';
+  is_published?: boolean;
   is_featured: boolean;
-  view_count: number;
-  like_count: number;
-  comment_count: number;
+  view_count?: number;
+  like_count?: number;
+  comment_count?: number;
+  views_count?: number;
+  likes_count?: number;
+  comments_count?: number;
   reading_time?: number;
   published_at?: string;
   created_at: string;

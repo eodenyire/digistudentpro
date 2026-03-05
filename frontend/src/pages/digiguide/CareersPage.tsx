@@ -5,6 +5,15 @@ import { Search, Briefcase, TrendingUp, DollarSign } from 'lucide-react';
 import { useState } from 'react';
 import { Career } from '@/types';
 
+function parseList(value: string | string[] | undefined): string[] {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  return value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export default function CareersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCluster, setSelectedCluster] = useState<number | undefined>();
@@ -79,6 +88,9 @@ export default function CareersPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-secondary-900">{career.name}</h3>
+                  {career.cluster_name && (
+                    <p className="text-xs text-secondary-500 mt-1">{career.cluster_name}</p>
+                  )}
                   {career.salary_range && (
                     <p className="text-sm text-secondary-600 flex items-center gap-1 mt-1">
                       <DollarSign size={14} />
@@ -99,9 +111,9 @@ export default function CareersPage() {
                 </div>
               )}
 
-              {career.skills_needed && career.skills_needed.length > 0 && (
+              {parseList(career.skills_needed).length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {career.skills_needed.slice(0, 3).map((skill, idx) => (
+                  {parseList(career.skills_needed).slice(0, 3).map((skill, idx) => (
                     <span
                       key={idx}
                       className="text-xs px-2 py-1 bg-primary-50 text-primary-700 rounded"
@@ -109,9 +121,9 @@ export default function CareersPage() {
                       {skill}
                     </span>
                   ))}
-                  {career.skills_needed.length > 3 && (
+                  {parseList(career.skills_needed).length > 3 && (
                     <span className="text-xs px-2 py-1 bg-secondary-100 text-secondary-600 rounded">
-                      +{career.skills_needed.length - 3} more
+                      +{parseList(career.skills_needed).length - 3} more
                     </span>
                   )}
                 </div>
