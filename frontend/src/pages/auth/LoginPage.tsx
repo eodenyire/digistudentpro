@@ -7,7 +7,7 @@ import { Button, Input } from '@/components/ui';
 import { GraduationCap } from 'lucide-react';
 
 const loginSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
+  email: z.string().email('Valid email is required'),
   password: z.string().min(1, 'Password is required'),
 });
 
@@ -46,10 +46,11 @@ export default function LoginPage() {
         <div className="bg-white rounded-lg shadow-lg p-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <Input
-              label="Username"
-              {...register('username')}
-              error={errors.username?.message}
-              placeholder="Enter your username"
+              label="Email"
+              type="email"
+              {...register('email')}
+              error={errors.email?.message}
+              placeholder="Enter your email"
             />
 
             <Input
