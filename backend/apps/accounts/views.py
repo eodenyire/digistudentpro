@@ -1,25 +1,96 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
-from .models import User
-from .serializers import UserSerializer
+from django.contrib.auth import get_user_model
+from .models import StudentProfile, MentorProfile, ParentGuardian
+from .serializers import (
+    UserSerializer, StudentProfileSerializer,
+    MentorProfileSerializer, ParentGuardianSerializer
+)
 
-class UserViewSet(viewsets.ViewSet):
+User = get_user_model()
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet for User model - Read only
+    User creation handled by Djoser
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
     
+    @action(detail=False, methods=['get'])
     def me(self, request):
-        user = request.user
-        serializer = UserSerializer(user)
+        """Get current user profile"""
+        serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    def update_streak(self, request, pk=None):
-        user = self.get_object(pk)
-        # Your logic to update streak
-        return Response(status=status.HTTP_200_OK)
 
-    def add_points(self, request, pk=None):
-        user = self.get_object(pk)
-        # Your logic to add points
-        return Response(status=status.HTTP_200_OK)
+class StudentProfileViewSet(viewsets.ModelViewSet):
+    """ViewSet for Student Profile management"""
+    queryset = StudentProfile.objects.select_related('user', 'current_grade').all()
+    serializer_class = StudentProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        """Filter to show only own profile or all for admin"""
+        if self.request.user.is_staff:
+            return self.queryset
+        if hasattr(self.request.user, 'student_profile'):
+            return self.queryset.filter(user=self.request.user)
+        return self.queryset.none()
+    
+    @action(detail=False, methods=['get'])
+    def my_profile(self, request):
+        """Get current user's student profile"""
+        try:
+            profile = StudentProfile.objects.select_related(
+                'user', 'current_grade'
+            ).get(user=request.user)
+            serializer = self.get_serializer(profile)
+            return Response(serializer.data)
+        except StudentProfile.DoesNotExist:
+            return Response(
+                {'detail': 'Student profile not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-    def get_object(self, pk):
-        return User.objects.get(pk=pk)
+
+class MentorProfileViewSet(viewsets.ModelViewSet):
+    """ViewSet for Mentor Profile management"""
+    queryset = MentorProfile.objects.select_related('user').all()
+    serializer_class = MentorProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        """Show only verified mentors to non-staff, all to staff"""
+        if self.request.user.is_staff:
+            return self.queryset
+        return self.queryset.filter(verification_status='verified')
+    
+    @action(detail=False, methods=['get'])
+    def my_profile(self, request):
+        """Get current user's mentor profile"""
+        try:
+            profile = MentorProfile.objects.select_related('user').get(user=request.user)
+            serializer = self.get_serializer(profile)
+            return Response(serializer.data)
+        except MentorProfile.DoesNotExist:
+            return Response(
+                {'detail': 'Mentor profile not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class ParentGuardianViewSet(viewsets.ModelViewSet):
+    """ViewSet for Parent/Guardian management"""
+    queryset = ParentGuardian.objects.select_related('user').prefetch_related('students').all()
+    serializer_class = ParentGuardianSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        """Filter to show only own profile or all for admin"""
+        if self.request.user.is_staff:
+            return self.queryset
+        return self.queryset.filter(user=self.request.user)

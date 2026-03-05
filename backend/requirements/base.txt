@@ -1,0 +1,35 @@
+# Core Django
+Django>=5.0,<5.1
+psycopg2-binary>=2.9.9
+
+# Django REST Framework
+djangorestframework>=3.14.0
+django-cors-headers>=4.3.1
+django-filter>=23.5
+
+# Authentication
+djangorestframework-simplejwt>=5.3.1
+djoser>=2.2.2
+
+# Celery & Redis
+celery>=5.3.4
+redis>=5.0.1
+django-redis>=5.4.0
+
+# Django Channels for WebSocket
+channels>=4.0.0
+channels-redis>=4.1.0
+daphne>=4.0.0
+
+# Image handling
+Pillow>=10.1.0
+
+# Environment variables
+python-decouple>=3.8
+
+# Utilities
+python-slugify>=8.0.1
+django-extensions>=3.2.3
+
+# Date/Time
+python-dateutil>=2.8.2
