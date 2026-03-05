@@ -55,7 +55,10 @@ class APIIntegrationTests:
             )
             
             if created:
-                user.set_password('APITest123!')
+                # Use default test password (configured via environment variable)
+                import os
+                test_password = os.environ.get('TEST_USER_PASSWORD', 'TestPass123!')
+                user.set_password(test_password)
                 user.save()
             
             # Get or create token
