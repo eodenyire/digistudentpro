@@ -2,35 +2,66 @@ import { useAuthStore } from '@/store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { BookOpen, Trophy, MessageSquare, TrendingUp, Clock, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { digiblogApi, digichatApi, digiguideApi, digilabApi } from '@/api';
+import { formatRelativeTime } from '@/utils/helpers';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
 
+  const { data: careersData } = useQuery({
+    queryKey: ['dashboard-careers'],
+    queryFn: () => digiguideApi.getCareers(),
+  });
+
+  const { data: resourcesData } = useQuery({
+    queryKey: ['dashboard-resources'],
+    queryFn: () => digilabApi.getResources(),
+  });
+
+  const { data: postsData } = useQuery({
+    queryKey: ['dashboard-posts'],
+    queryFn: () => digiblogApi.getPosts(),
+  });
+
+  const { data: squadsData } = useQuery({
+    queryKey: ['dashboard-squads'],
+    queryFn: () => digichatApi.getSquads(),
+  });
+
+  const resourceCount = resourcesData?.count ?? 0;
+  const careerCount = careersData?.count ?? 0;
+  const postCount = postsData?.count ?? 0;
+  const squadCount = squadsData?.count ?? 0;
+
+  const recentResources = resourcesData?.results?.slice(0, 3) ?? [];
+  const topCareers = careersData?.results?.slice(0, 3) ?? [];
+
   const stats = [
     {
-      label: 'Resources Completed',
-      value: '24',
+      label: 'Resources Available',
+      value: String(resourceCount),
       icon: BookOpen,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
-      label: 'Assessments Passed',
-      value: '18',
+      label: 'Careers Available',
+      value: String(careerCount),
       icon: Trophy,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
     },
     {
-      label: 'Study Time',
-      value: '42h',
+      label: 'Published Posts',
+      value: String(postCount),
       icon: Clock,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
     },
     {
-      label: 'Career Matches',
-      value: '8',
+      label: 'Active Squads',
+      value: String(squadCount),
       icon: Target,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
@@ -40,28 +71,40 @@ export default function DashboardPage() {
   const quickActions = [
     {
       title: 'Explore Careers',
-      description: 'Discover career paths based on your interests',
+      description:
+        careerCount > 0
+          ? `Discover ${careerCount} career paths based on your interests`
+          : 'Discover career paths based on your interests',
       href: '/digiguide/careers',
       icon: Target,
       color: 'bg-primary-600',
     },
     {
       title: 'Browse Resources',
-      description: 'Access learning materials and assessments',
+      description:
+        resourceCount > 0
+          ? `Access ${resourceCount} learning resources and assessments`
+          : 'Access learning materials and assessments',
       href: '/digilab/browse',
       icon: BookOpen,
       color: 'bg-blue-600',
     },
     {
       title: 'Join Squads',
-      description: 'Connect with peers and mentors',
+      description:
+        squadCount > 0
+          ? `Connect with peers in ${squadCount} active squads`
+          : 'Connect with peers and mentors',
       href: '/digichat/squads',
       icon: MessageSquare,
       color: 'bg-green-600',
     },
     {
       title: 'Read Blogs',
-      description: 'Stay updated with educational content',
+      description:
+        postCount > 0
+          ? `Stay updated with ${postCount} published posts`
+          : 'Stay updated with educational content',
       href: '/digiblog',
       icon: TrendingUp,
       color: 'bg-purple-600',
@@ -137,14 +180,19 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center gap-4 p-3 bg-secondary-50 rounded-lg">
+              {recentResources.length === 0 && (
+                <p className="text-sm text-secondary-600">No resources available yet.</p>
+              )}
+              {recentResources.map((resource) => (
+                <div key={resource.id} className="flex items-center gap-4 p-3 bg-secondary-50 rounded-lg">
                   <div className="w-12 h-12 bg-primary-100 rounded flex items-center justify-center">
                     <BookOpen className="text-primary-600" size={20} />
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-secondary-900">Mathematics Algebra</p>
-                    <p className="text-sm text-secondary-600">Grade 10 • 75% Complete</p>
+                    <p className="font-medium text-secondary-900">{resource.title}</p>
+                    <p className="text-sm text-secondary-600 capitalize">
+                      {resource.resource_type} • {resource.difficulty || resource.difficulty_level || 'beginner'}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -154,19 +202,27 @@ export default function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Upcoming Assessments</CardTitle>
+            <CardTitle>Career Highlights</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center gap-4 p-3 bg-secondary-50 rounded-lg">
+              {topCareers.length === 0 && (
+                <p className="text-sm text-secondary-600">No careers available yet.</p>
+              )}
+              {topCareers.map((career) => (
+                <div key={career.id} className="flex items-center gap-4 p-3 bg-secondary-50 rounded-lg">
                   <div className="w-12 h-12 bg-green-100 rounded flex items-center justify-center">
                     <Trophy className="text-green-600" size={20} />
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-secondary-900">Chemistry Quiz</p>
-                    <p className="text-sm text-secondary-600">Due in 3 days</p>
+                    <p className="font-medium text-secondary-900">{career.name}</p>
+                    <p className="text-sm text-secondary-600">
+                      {career.cluster_name || 'General'}
+                    </p>
                   </div>
+                  {career.created_at && (
+                    <span className="text-xs text-secondary-500">{formatRelativeTime(career.created_at)}</span>
+                  )}
                 </div>
               ))}
             </div>

@@ -5,6 +5,7 @@ import { FileText, Heart, MessageCircle, Eye, Plus, Search } from 'lucide-react'
 import { useState } from 'react';
 import { BlogPost, BlogCategory } from '@/types';
 import { formatRelativeTime } from '@/utils/helpers';
+import { useNavigate } from 'react-router-dom';
 
 function parseTags(tags: string | string[] | undefined): string[] {
   if (!tags) return [];
@@ -18,6 +19,7 @@ function parseTags(tags: string | string[] | undefined): string[] {
 export default function BlogFeedPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<BlogCategory | undefined>();
+  const navigate = useNavigate();
 
   const { data: postsData, isLoading } = useQuery({
     queryKey: ['blog-posts', searchQuery, selectedCategory],
@@ -107,7 +109,13 @@ export default function BlogFeedPage() {
                   </div>
 
                   <h2 className="text-2xl font-bold text-secondary-900 mb-2 hover:text-primary-600 cursor-pointer">
-                    {post.title}
+                    <button
+                      type="button"
+                      className="text-left hover:text-primary-600"
+                      onClick={() => navigate(`/digiblog/${post.slug}`)}
+                    >
+                      {post.title}
+                    </button>
                   </h2>
 
                   <div className="flex items-center gap-4 text-sm text-secondary-600 mb-3">
@@ -154,7 +162,11 @@ export default function BlogFeedPage() {
                         {post.views_count ?? 0}
                       </span>
                     </div>
-                    <Button size="sm" variant="ghost">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => navigate(`/digiblog/${post.slug}`)}
+                    >
                       Read More
                     </Button>
                   </div>

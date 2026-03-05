@@ -24,11 +24,12 @@ export const digiblogApi = {
   },
 
   getPostBySlug: async (slug: string): Promise<BlogPost> => {
-    const response = await apiClient.get('/digiblog/posts/', {
-      params: { slug },
-    });
-    const results = response.data.results || response.data;
-    return results[0];
+    const normalizedSlug = slug?.trim();
+    if (!normalizedSlug) {
+      throw new Error('Post slug is required');
+    }
+    const response = await apiClient.get(`/digiblog/posts/${normalizedSlug}/`);
+    return response.data;
   },
 
   createPost: async (data: {

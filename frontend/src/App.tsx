@@ -16,6 +16,7 @@ import CareersPage from './pages/digiguide/CareersPage';
 import BrowseResourcesPage from './pages/digilab/BrowseResourcesPage';
 import SquadsPage from './pages/digichat/SquadsPage';
 import BlogFeedPage from './pages/digiblog/BlogFeedPage';
+import BlogDetailPage from './pages/digiblog/BlogDetailPage';
 
 // Create QueryClient
 const queryClient = new QueryClient({
@@ -56,6 +57,7 @@ function App() {
               
               {/* DigiBlog Routes */}
               <Route path="/digiblog" element={<BlogFeedPage />} />
+              <Route path="/digiblog/:slug" element={<BlogDetailPage />} />
             </Route>
           </Route>
 
