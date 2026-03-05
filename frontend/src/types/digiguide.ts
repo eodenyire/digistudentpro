@@ -31,27 +31,37 @@ export interface Subject {
   updated_at: string;
 }
 
+export interface ClusterRequirement {
+  id: number;
+  subject: number;
+  subject_name: string;
+  minimum_grade: string;
+  is_mandatory: boolean;
+}
+
 export interface Cluster {
   id: number;
   name: string;
   code: string;
   description?: string;
-  subjects: number[];
-  created_at: string;
-  updated_at: string;
+  requirements?: ClusterRequirement[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Career {
   id: number;
   name: string;
   description?: string;
-  clusters: number[];
+  cluster?: number;
+  cluster_name?: string;
+  clusters?: number[];
   required_subjects: number[];
   minimum_grades: Record<string, string>;
   salary_range?: string;
   job_outlook?: string;
   required_qualifications?: string;
-  skills_needed: string[];
+  skills_needed: string | string[];
   career_path?: string;
   work_environment?: string;
   created_at: string;

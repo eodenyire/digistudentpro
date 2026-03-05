@@ -2,14 +2,18 @@
 # Ignore Python cache
 __pycache__/
 *.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
 
-# Ignore environment variables
+# Environment and config
 .env
-
-# Virtual environment
+.env.local
+.venv
 venv/
-env/
 ENV/
+env/
 
 # Database
 *.sqlite3
@@ -18,6 +22,24 @@ db.sqlite3
 # Logs
 logs/
 *.log
+
+# Media and static files
+media/
+staticfiles/
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnp.cjs
 
 # Django static files
 /static/

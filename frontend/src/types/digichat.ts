@@ -3,10 +3,12 @@
 export interface Squad {
   id: number;
   name: string;
+  slug: string;
   description?: string;
   topic?: string;
   avatar?: string;
-  is_private: boolean;
+  is_public: boolean;
+  is_member?: boolean;
   created_by: number;
   member_count: number;
   last_message?: string;
@@ -21,7 +23,7 @@ export interface SquadMembership {
   user: number;
   role: 'admin' | 'moderator' | 'member';
   joined_at: string;
-  is_muted: boolean;
+  is_muted?: boolean;
 }
 
 export interface Message {

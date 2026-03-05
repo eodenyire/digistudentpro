@@ -5,14 +5,21 @@ from .models import Squad, SquadMembership, Message, DirectMessage, MessageRepor
 class SquadSerializer(serializers.ModelSerializer):
     created_by_name = serializers.CharField(source='created_by.get_full_name', read_only=True)
     member_count = serializers.SerializerMethodField()
-    
+    is_member = serializers.SerializerMethodField()
+
     class Meta:
         model = Squad
-        fields = ['id', 'name', 'slug', 'description', 'topic', 'created_by', 'created_by_name', 'is_public', 'max_members', 'avatar', 'member_count', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'slug', 'description', 'topic', 'created_by', 'created_by_name', 'is_public', 'max_members', 'avatar', 'member_count', 'is_member', 'created_at', 'updated_at']
         read_only_fields = ['slug', 'created_at', 'updated_at']
-    
+
     def get_member_count(self, obj):
         return obj.members.count()
+
+    def get_is_member(self, obj):
+        request = self.context.get('request')
+        if not request or not request.user or not request.user.is_authenticated:
+            return False
+        return obj.members.filter(id=request.user.id).exists()
 
 
 class SquadMembershipSerializer(serializers.ModelSerializer):

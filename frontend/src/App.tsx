@@ -11,10 +11,12 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import ProfilePage from './pages/ProfilePage';
 import CareersPage from './pages/digiguide/CareersPage';
 import BrowseResourcesPage from './pages/digilab/BrowseResourcesPage';
 import SquadsPage from './pages/digichat/SquadsPage';
 import BlogFeedPage from './pages/digiblog/BlogFeedPage';
+import BlogDetailPage from './pages/digiblog/BlogDetailPage';
 
 // Create QueryClient
 const queryClient = new QueryClient({
@@ -42,6 +44,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
               
               {/* DigiGuide Routes */}
               <Route path="/digiguide/careers" element={<CareersPage />} />
@@ -54,6 +57,7 @@ function App() {
               
               {/* DigiBlog Routes */}
               <Route path="/digiblog" element={<BlogFeedPage />} />
+              <Route path="/digiblog/:slug" element={<BlogDetailPage />} />
             </Route>
           </Route>
 
