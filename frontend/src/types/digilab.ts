@@ -1,6 +1,6 @@
 // DigiLab Module Types
 
-export type ResourceType = 'video' | 'document' | 'interactive' | 'audio' | 'pdf';
+export type ResourceType = 'text' | 'video' | 'audio' | 'pdf' | 'assessment';
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
 
 export interface Strand {
@@ -30,18 +30,27 @@ export interface SubStrand {
 export interface LearningResource {
   id: number;
   sub_strand: number;
+  sub_strand_name?: string;
   title: string;
+  slug?: string;
   description?: string;
   resource_type: ResourceType;
-  content_url?: string;
+  content?: string;
   file?: string;
+  external_url?: string;
   thumbnail?: string;
+  difficulty?: DifficultyLevel;
   duration?: number;
-  difficulty_level: DifficultyLevel;
-  tags: string[];
+  duration_minutes?: number;
+  difficulty_level?: DifficultyLevel;
+  tags?: string[];
   is_featured: boolean;
-  view_count: number;
-  created_by: number;
+  view_count?: number;
+  views_count?: number;
+  created_by?: number;
+  author?: number;
+  author_name?: string;
+  is_published?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -109,6 +118,7 @@ export interface ResourceFilters {
   grade?: number;
   strand?: number;
   resource_type?: ResourceType;
+  difficulty?: DifficultyLevel;
   difficulty_level?: DifficultyLevel;
   search?: string;
   is_featured?: boolean;

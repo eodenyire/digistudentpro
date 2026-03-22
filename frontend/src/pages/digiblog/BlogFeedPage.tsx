@@ -5,10 +5,21 @@ import { FileText, Heart, MessageCircle, Eye, Plus, Search } from 'lucide-react'
 import { useState } from 'react';
 import { BlogPost, BlogCategory } from '@/types';
 import { formatRelativeTime } from '@/utils/helpers';
+import { useNavigate } from 'react-router-dom';
+
+function parseTags(tags: string | string[] | undefined): string[] {
+  if (!tags) return [];
+  if (Array.isArray(tags)) return tags;
+  return tags
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
 
 export default function BlogFeedPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<BlogCategory | undefined>();
+  const navigate = useNavigate();
 
   const { data: postsData, isLoading } = useQuery({
     queryKey: ['blog-posts', searchQuery, selectedCategory],
@@ -57,12 +68,12 @@ export default function BlogFeedPage() {
             className="px-4 py-2 border border-secondary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             <option value="">All Categories</option>
-            <option value="education">Education</option>
-            <option value="career">Career</option>
-            <option value="technology">Technology</option>
-            <option value="lifestyle">Lifestyle</option>
-            <option value="news">News</option>
-            <option value="other">Other</option>
+            <option value="study_hacks">Study Hacks</option>
+            <option value="mental_health">Mental Health</option>
+            <option value="scholarships">Scholarships</option>
+            <option value="cbc_updates">CBC Updates</option>
+            <option value="tech">Tech in Schools</option>
+            <option value="career_guidance">Career Guidance</option>
           </select>
         </div>
       </div>
@@ -98,7 +109,13 @@ export default function BlogFeedPage() {
                   </div>
 
                   <h2 className="text-2xl font-bold text-secondary-900 mb-2 hover:text-primary-600 cursor-pointer">
-                    {post.title}
+                    <button
+                      type="button"
+                      className="text-left hover:text-primary-600"
+                      onClick={() => navigate(`/digiblog/${post.slug}`)}
+                    >
+                      {post.title}
+                    </button>
                   </h2>
 
                   <div className="flex items-center gap-4 text-sm text-secondary-600 mb-3">
@@ -117,9 +134,9 @@ export default function BlogFeedPage() {
                     {post.excerpt || post.content.substring(0, 200) + '...'}
                   </p>
 
-                  {post.tags && post.tags.length > 0 && (
+                  {parseTags(post.tags).length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {post.tags.slice(0, 5).map((tag, idx) => (
+                      {parseTags(post.tags).slice(0, 5).map((tag, idx) => (
                         <span
                           key={idx}
                           className="text-xs px-2 py-1 bg-secondary-100 text-secondary-600 rounded"
@@ -134,18 +151,22 @@ export default function BlogFeedPage() {
                     <div className="flex items-center gap-4 text-sm text-secondary-600">
                       <span className="flex items-center gap-1">
                         <Heart size={16} />
-                        {post.like_count}
+                        {post.likes_count ?? 0}
                       </span>
                       <span className="flex items-center gap-1">
                         <MessageCircle size={16} />
-                        {post.comment_count}
+                        {post.comments_count ?? 0}
                       </span>
                       <span className="flex items-center gap-1">
                         <Eye size={16} />
-                        {post.view_count}
+                        {post.views_count ?? 0}
                       </span>
                     </div>
-                    <Button size="sm" variant="ghost">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => navigate(`/digiblog/${post.slug}`)}
+                    >
                       Read More
                     </Button>
                   </div>

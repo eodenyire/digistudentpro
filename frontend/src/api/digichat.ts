@@ -15,8 +15,8 @@ export const digichatApi = {
     return response.data;
   },
 
-  getSquadById: async (id: number): Promise<Squad> => {
-    const response = await apiClient.get(`/digichat/squads/${id}/`);
+  getSquadById: async (identifier: number | string): Promise<Squad> => {
+    const response = await apiClient.get(`/digichat/squads/${identifier}/`);
     return response.data;
   },
 
@@ -24,7 +24,7 @@ export const digichatApi = {
     name: string;
     description?: string;
     topic?: string;
-    is_private?: boolean;
+    is_public?: boolean;
   }): Promise<Squad> => {
     const response = await apiClient.post('/digichat/squads/', data);
     return response.data;
@@ -39,18 +39,18 @@ export const digichatApi = {
     await apiClient.delete(`/digichat/squads/${id}/`);
   },
 
-  joinSquad: async (id: number): Promise<SquadMembership> => {
-    const response = await apiClient.post(`/digichat/squads/${id}/join/`);
+  joinSquad: async (slug: string): Promise<SquadMembership> => {
+    const response = await apiClient.post(`/digichat/squads/${slug}/join/`);
     return response.data;
   },
 
-  leaveSquad: async (id: number): Promise<void> => {
-    await apiClient.post(`/digichat/squads/${id}/leave/`);
+  leaveSquad: async (slug: string): Promise<void> => {
+    await apiClient.post(`/digichat/squads/${slug}/leave/`);
   },
 
   // Squad Memberships
   getSquadMembers: async (squadId: number): Promise<SquadMembership[]> => {
-    const response = await apiClient.get('/digichat/squad-memberships/', {
+    const response = await apiClient.get('/digichat/memberships/', {
       params: { squad: squadId },
     });
     return response.data.results || response.data;
@@ -60,12 +60,12 @@ export const digichatApi = {
     membershipId: number,
     role: 'admin' | 'moderator' | 'member'
   ): Promise<SquadMembership> => {
-    const response = await apiClient.patch(`/digichat/squad-memberships/${membershipId}/`, { role });
+    const response = await apiClient.patch(`/digichat/memberships/${membershipId}/`, { role });
     return response.data;
   },
 
   removeMember: async (membershipId: number): Promise<void> => {
-    await apiClient.delete(`/digichat/squad-memberships/${membershipId}/`);
+    await apiClient.delete(`/digichat/memberships/${membershipId}/`);
   },
 
   // Squad Messages

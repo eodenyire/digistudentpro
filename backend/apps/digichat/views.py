@@ -1,4 +1,6 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db import models
 from .models import Squad, SquadMembership, Message, DirectMessage, MessageReport
@@ -12,6 +14,45 @@ class SquadViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['is_public', 'topic']
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+    @action(detail=True, methods=['post'])
+    def join(self, request, slug=None):
+        squad = self.get_object()
+
+        if squad.members.filter(id=request.user.id).exists():
+            membership = SquadMembership.objects.get(squad=squad, user=request.user)
+            data = SquadMembershipSerializer(membership).data
+            return Response(data, status=status.HTTP_200_OK)
+
+        if squad.members.count() >= squad.max_members:
+            return Response(
+                {'detail': 'This squad has reached the maximum number of members.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        membership = SquadMembership.objects.create(squad=squad, user=request.user, role='member')
+        data = SquadMembershipSerializer(membership).data
+        return Response(data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'])
+    def leave(self, request, slug=None):
+        squad = self.get_object()
+        membership = SquadMembership.objects.filter(squad=squad, user=request.user).first()
+
+        if not membership:
+            return Response({'detail': 'You are not a member of this squad.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if squad.created_by_id == request.user.id:
+            return Response(
+                {'detail': 'Squad creator cannot leave. Transfer ownership or delete the squad.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        membership.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class SquadMembershipViewSet(viewsets.ModelViewSet):
